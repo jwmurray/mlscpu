@@ -8,8 +8,6 @@ Although there are various commands that can retrieve this information (as menti
 
 ## Usage
 
-**Note:** Apple Silicon is not yet supported.
-
 To build `mlscpu`, run the following command:
 
 ```bash
@@ -51,3 +49,48 @@ Flags: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA CMOV PAT
        POPCNT AES PCID XSAVE OSXSAVE SEGLIM64 TSCTMR AVX1.0 RDRAND F16C
 [14:59][mlscpu] 
 ```
+
+### Apple Silicon
+
+Apple Silicon exposes CPU details through a different set of sysctls than Intel
+Macs: the `machdep.cpu.*` keys carrying vendor, family, model, stepping and
+feature flags do not exist, and neither do `hw.cpufrequency*` or
+`hw.l3cachesize`. `mlscpu` detects the architecture and reports the fields the
+machine actually has, rather than printing empty values for the rest.
+
+Cores and caches are listed per performance level, since the clusters differ
+from one another and the flat `hw.l1dcachesize` family of keys describes only
+one of them.
+
+```bash
+[11:37][~] mlscpu
+Architecture: arm64
+Byte Order: Little Endian
+CPU(s): 18
+On-line CPU(s): 18
+Thread(s) per core: 1
+Core(s) per socket: 18
+Socket(s): 1
+Vendor ID: Apple
+Model name: Apple M5 Max
+CPU family: 0xf76c5b1a
+CPU subfamily: 5
+Core(s) per perf level: 6 (Super), 12 (Performance)
+L1d cache: 128K (Super), 64K (Performance)
+L1i cache: 192K (Super), 128K (Performance)
+L2 cache: 16384K (Super), 8192K (Performance)
+Cache line size: 128B
+Flags: advsimd advsimd_hpfpcvt aes afp armv8_1_atomics armv8_2_fhm armv8_2_sha3
+       armv8_2_sha512 armv8_3_compnum armv8_crc32 armv8_gpi bf16 bti crc32 cssc
+       csv2 csv3 dit dotprod dpb dpb2 ebf16 ecv fcma fhm flagm flagm2
+       floatingpoint fp16 fp_syncexceptions fpac fpaccombine frintts hbc i8mm
+       jscvt lrcpc lrcpc2 lse lse2 mte mte2 mte4 mte_canonical_tags
+       mte_no_address_tags mte_store_only neon neon_fp16 neon_hpfp pacimp pauth
+       pauth2 pmull rdm rpres sb sha1 sha256 sha3 sha512 sme sme2 sme2p1
+       sme_b16b16 sme_b16f32 sme_bi32i32 sme_f16f16 sme_f16f32 sme_f32f32
+       sme_f64f64 sme_i16i32 sme_i16i64 sme_i8i32 sve_b16b16 ucnormal_mem wfxt
+```
+
+CPU frequency is not reported on Apple Silicon: no sysctl exposes it, and the
+performance and efficiency clusters run at different clocks, so a single figure
+would be misleading.
