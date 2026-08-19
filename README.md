@@ -94,3 +94,12 @@ Flags: advsimd advsimd_hpfpcvt aes afp armv8_1_atomics armv8_2_fhm armv8_2_sha3
 CPU frequency is not reported on Apple Silicon: no sysctl exposes it, and the
 performance and efficiency clusters run at different clocks, so a single figure
 would be misleading.
+
+## Credits
+
+`mlscpu` was written by [Parth Parikh](https://github.com/pncnmnp) and is
+distributed under the MIT License; see [LICENSE](./LICENSE). This repository is
+a fork of [pncnmnp/mlscpu](https://github.com/pncnmnp/mlscpu) carrying Apple
+Silicon support, offered upstream as
+[pncnmnp/mlscpu#2](https://github.com/pncnmnp/mlscpu/pull/2).
+
